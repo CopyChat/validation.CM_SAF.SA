@@ -29,7 +29,7 @@ N_model = 1
 VAR ='rsds' 
 NYEAR=313
 
-LINE=462
+LINE=423
 #=================================================== reading data
 # reading CMSAF
 
@@ -55,7 +55,7 @@ print Dir+GEBA_flag
 
 GEBA_FLAG = np.array(pd.read_csv(Dir+GEBA_flag,index_col=False)) # (462,18)
 GEBA_RSDS = np.array(pd.read_csv(Dir+GEBA_rsds,index_col=False))
-#StaID,obsID,year,Jan,Feb,Mar,Api,May,Jun,July,Aug,Sep,Oct,Nov,Dec,sta,country,ID
+#StaID,obsID,year,Jan,Feb,Mar,Api,May,Jun,July,Aug,Sep,Oct,Nov,Dec,mean,station,country,NO
 
 print GEBA_FLAG.shape
 #=================================================== 
