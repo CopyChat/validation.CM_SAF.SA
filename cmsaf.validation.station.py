@@ -6,6 +6,7 @@ Ctang, A map of mean max and min of ensembles
         Data was restored on titan
 ========
 """
+import pdb
 import math
 import subprocess
 import numpy as np
@@ -61,6 +62,7 @@ print GEBA_FLAG.shape
 #=================================================== 
 # reading station
 
+
 stationfile = 'GEBA.station.csv'
 station = np.array(pd.read_csv(Dir+stationfile,index_col=False))
 #staNO,staID,lat,lon,Nmonth
@@ -80,6 +82,8 @@ print station_name
 # good data: 1
 # bad data: -1
 # missing data: 0
+
+aaa=000
 
 def justice(flag):
     jjj=90908                     # default
@@ -112,7 +116,6 @@ def justice(flag):
 #--------------------------------------------------- 
 # functino to plot GEBA vs OBS
 def VS(x,x1,y,ax,i,title):
-
 
     vmin=100
     vmax=385
@@ -185,6 +188,7 @@ def VS(x,x1,y,ax,i,title):
 
             print slope,intercept,r_value,p_value,std_err
 
+
             yy=[t*slope+intercept for t in range(400)]
             ax.plot(range(400),yy,'--',color='red',zorder=10,label='fitting')
             legend = ax.legend(loc='upper left', shadow=False,prop={'size':8})
@@ -193,7 +197,6 @@ def VS(x,x1,y,ax,i,title):
                 ax.text( 370,135,'r='+str(format(r_value,'.2f'))+'(p<0.01)',ha='right', fontsize=8, rotation=0)   
             else:
                 ax.text( 370,135,'r='+str(format(r_value,'.2f'))+'(p='+str(format(p_value,'.2f'))+')',ha='right', fontsize=8, rotation=0)   
-
 
         # cof=float(np.ma.corrcoef(x,y)[0,1])
         # ax.text( 380,135,'cof:'+str(format(cof,'.2f')),ha='right', fontsize=8, rotation=0)   # plot vs line
@@ -219,7 +222,7 @@ def plot_by_model(title):
             CMSAF_array=CMSAF
             CMSAF_sta1=np.array(CMSAF_array[np.where(CMSAF_array[:,1]==sta)])
             CMSAF_sta=CMSAF_sta1[:,3:15].flatten()
-        
+            
             # prepare obs
             GEBA_PlotFlag1=np.array(GEBA_FLAG[np.where(GEBA_FLAG[:,0]==sta)])
             GEBA_PlotFlag=GEBA_PlotFlag1[:,3:15].flatten()
@@ -254,6 +257,6 @@ def plot_by_model(title):
 plot_by_model(station_name)
 
 #=================================================== end
-plt.show()
+# plt.show()
 quit()
 

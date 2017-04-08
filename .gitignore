@@ -5,3 +5,4 @@
 *.ali
 *.eps
 MONTH/*.nc
+*csv

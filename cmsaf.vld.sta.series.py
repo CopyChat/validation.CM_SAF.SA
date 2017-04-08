@@ -6,6 +6,7 @@ Ctang, A map of mean max and min of ensembles
         Data was restored on titan
 ========
 """
+import pdb
 import math
 import subprocess
 import datetime
@@ -229,17 +230,17 @@ def plot_by_model(title):
             # prepare cm_saf
             CMSAF_array=CMSAF
             CMSAF_sta1=np.array(CMSAF_array[np.where(CMSAF_array[:,1]==sta)])
-            # CMSAF_sta=CMSAF_sta1[:,3:15].flatten()
             CMSAF_sta=CMSAF_sta1[:,2:15]
 
             # prepare obs
             GEBA_PlotFlag1=np.array(GEBA_FLAG[np.where(GEBA_FLAG[:,0]==sta)])
-            # GEBA_PlotFlag=GEBA_PlotFlag1[:,3:15].flatten()
             GEBA_PlotFlag=GEBA_PlotFlag1[:,2:15]
 
             GEBA_PlotRsds1=np.array(GEBA_RSDS[np.where(GEBA_RSDS[:,0]==sta)])
-            # GEBA_PlotRsds=GEBA_PlotRsds1[:,3:15].flatten()
             GEBA_PlotRsds=GEBA_PlotRsds1[:,2:15]
+
+            if j == 12:
+                pdb.set_trace()
 
             # check
             print("-------input:",j,sta,CMSAF_sta.shape,GEBA_PlotRsds.shape)
