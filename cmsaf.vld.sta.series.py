@@ -172,9 +172,9 @@ def VS(x,x1,y,ax,i,title):
     if len(x) > 0:
 
         vmin=100
-        vmax=385
+        vmax=395
 
-        ax.set_ylabel('SSR (W/m2)',fontsize=8)
+        # ax.set_ylabel('SSR (W/m2)',fontsize=8)
         # ax.set_xlabel('TIME',fontsize=8)
 
         ax.set_ylim((vmin,vmax))
@@ -191,20 +191,27 @@ def VS(x,x1,y,ax,i,title):
         ax.plot(date,x,linestyle='--',marker='s',markersize=2,zorder=2,label='GEBA',color='blue')
         ax.plot(date,y,linestyle='-',marker='o',markersize=2,zorder=2,label='CM_SAF',color='red')
         legend = ax.legend(loc='upper left', shadow=False ,prop={'size':5})
-        ax.set_xlim(datetime.datetime(1982,12,01),datetime.datetime(2006,1,31))
-        ax.set_title(str(i+1)+". "+title[i],fontsize=6)
-        plt.setp( ax.xaxis.get_majorticklabels(), rotation=45)
+        ax.set_xlim(datetime.datetime(1982,12,01),datetime.datetime(2005,12,31))
+        plt.setp( ax.xaxis.get_majorticklabels(), rotation=90)
+
+        # ax.set_title(str(i+1)+". "+title[i],fontsize=6)
+        ax.text(datetime.datetime(2005,06,15),350,str(i+1)+". "+title[i],ha='right', fontsize=10, rotation=0)   
 
     
     # no. of records
     NO=len(list(x))
-    ax.text( datetime.datetime(2005,12,01),165,'#:'+str(NO),ha='right', fontsize=8, rotation=0)   
+    if i == 35:
+        ax.text( datetime.datetime(1998,12,01),165,'#:'+str(NO),ha='right', fontsize=10, rotation=0)   
+        # mean bias of records
+        bias=np.array([np.abs(y[l]-x[l]) for l in range(len(x))]).mean()
+        ax.text( datetime.datetime(1998,12,01),115,'MAB='+str(format(bias,'.2f')),ha='right', fontsize=10, rotation=0)   
+    else:
+        ax.text( datetime.datetime(2005,12,01),165,'#:'+str(NO),ha='right', fontsize=10, rotation=0)   
+        # mean bias of records
+        bias=np.array([np.abs(y[l]-x[l]) for l in range(len(x))]).mean()
+        ax.text( datetime.datetime(2005,12,01),115,'MAB='+str(format(bias,'.2f')),ha='right', fontsize=10, rotation=0)   
 
-    # mean bias of records
 
-    # bias=np.mean(y)-np.mean(x)
-    bias=np.array([np.abs(y[l]-x[l]) for l in range(len(x))]).mean()
-    ax.text( datetime.datetime(2005,12,01),135,'mean absolute bias='+str(format(bias,'.2f')),ha='right', fontsize=8, rotation=0)   
 
 
     return format(bias,'.2f')
@@ -212,45 +219,59 @@ def VS(x,x1,y,ax,i,title):
 
 #=================================================== plot by 21 models
 
+ncol=5
+nrow=9
 def plot_by_model(title):
     COF=np.zeros((N_model,len(station_id)))
 
     for i in range(N_model):
         print("plotting in model",str(i+1))
-        fig, axes = plt.subplots(nrows=7, ncols=7,\
-            figsize=(40,18),facecolor='w', edgecolor='k') # (w,h)
-        fig.subplots_adjust(left=0.05,bottom=0.05,right=0.98,top=0.95,wspace=0.3,hspace=0.8)
-        # fig.subplots_adjust(left=0.05,bottom=0.05,right=0.98,top=0.95,wspace=0,hspace=0)
+        fig, axes = plt.subplots(nrows=nrow, ncols=ncol,\
+            sharex=True, sharey=True,\
+            figsize=(15,15),facecolor='w', edgecolor='k') # (w,h)
+        fig.subplots_adjust(left=0.07,bottom=0.10,right=0.93,top=0.93,wspace=0,hspace=0)
+        fig.text(0.5, 0.03, 'TIME', ha='center')
+        fig.text(0.03, 0.5, 'SSR (W/m2)', va='center', rotation='vertical')
         axes = axes.flatten() # reshape plots to 1D if needed
 
-        for j in range(len(station_id)):
-            sta=station_id[j]
+        # fig = plt.figure(figsize=(ncol+1, nrow+1)) # (w,h)
+        # gs = gridspec.GridSpec(nrow, ncol,\
+            # sharex=True, sharey=True,\
+            # wspace=0.0, hspace=0.0,\
+            # top=1.-0.5/(nrow+1), bottom=0.5/(nrow+1),\
+            # left=0.5/(ncol+1), right=1-0.5/(ncol+1)) 
 
-            # prepare cm_saf
-            CMSAF_array=CMSAF
-            CMSAF_sta1=np.array(CMSAF_array[np.where(CMSAF_array[:,1]==sta)])
-            # CMSAF_sta=CMSAF_sta1[:,3:15].flatten()
-            CMSAF_sta=CMSAF_sta1[:,2:15]
+        for j in range(ncol*nrow):
+            if j < (len(station_id)):
+                sta=station_id[j]
 
-            # prepare obs
-            GEBA_PlotFlag1=np.array(GEBA_FLAG[np.where(GEBA_FLAG[:,0]==sta)])
-            # GEBA_PlotFlag=GEBA_PlotFlag1[:,3:15].flatten()
-            GEBA_PlotFlag=GEBA_PlotFlag1[:,2:15]
+                # prepare cm_saf
+                CMSAF_array=CMSAF
+                CMSAF_sta1=np.array(CMSAF_array[np.where(CMSAF_array[:,1]==sta)])
+                # CMSAF_sta=CMSAF_sta1[:,3:15].flatten()
+                CMSAF_sta=CMSAF_sta1[:,2:15]
 
-            GEBA_PlotRsds1=np.array(GEBA_RSDS[np.where(GEBA_RSDS[:,0]==sta)])
-            # GEBA_PlotRsds=GEBA_PlotRsds1[:,3:15].flatten()
-            GEBA_PlotRsds=GEBA_PlotRsds1[:,2:15]
+                # prepare obs
+                GEBA_PlotFlag1=np.array(GEBA_FLAG[np.where(GEBA_FLAG[:,0]==sta)])
+                # GEBA_PlotFlag=GEBA_PlotFlag1[:,3:15].flatten()
+                GEBA_PlotFlag=GEBA_PlotFlag1[:,2:15]
 
-            # check
-            print("-------input:",j,sta,CMSAF_sta.shape,GEBA_PlotRsds.shape)
+                GEBA_PlotRsds1=np.array(GEBA_RSDS[np.where(GEBA_RSDS[:,0]==sta)])
+                # GEBA_PlotRsds=GEBA_PlotRsds1[:,3:15].flatten()
+                GEBA_PlotRsds=GEBA_PlotRsds1[:,2:15]
 
-#=================================================== 
-            # to plot
-            COF[i,j]=VS(\
-                    np.array(np.float32(GEBA_PlotRsds)),\
-                    np.array(np.float32(GEBA_PlotFlag)),\
-                    np.array(np.float32(CMSAF_sta)),\
-                    axes[j],j,title)
+                # check
+                print("-------input:",j,sta,CMSAF_sta.shape,GEBA_PlotRsds.shape)
+
+    #=================================================== 
+                # to plot
+                COF[i,j]=VS(\
+                        np.array(np.float32(GEBA_PlotRsds)),\
+                        np.array(np.float32(GEBA_PlotFlag)),\
+                        np.array(np.float32(CMSAF_sta)),\
+                        axes[j],j,title)
+            else:
+                ctang.empty_plot(axes[j])
 
         plt.suptitle('CM_SAF monthly SIS vs GEBA monthly RSDS (W/m2) in 44 stations ',fontsize=14)
 
