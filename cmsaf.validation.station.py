@@ -175,14 +175,14 @@ def VS(x,x1,y,ax,i,title):
 
         # set title
         # ax.set_title(str(i+1)+". "+title[i],fontsize=6)
-        ax.text( 110,340,str(i+1)+". "+title[i],ha='left', fontsize=6, rotation=0)   
+        ax.text( 110,360,str(i+1)+". "+title[i],ha='left', fontsize=6, rotation=0)   
 
         # ref line:
         k=np.linspace(100,400,301)
         ax.plot(k,k,'k-',zorder=5,color='black') # identity line
 
         # linear regression:
-        if len(x) > 5:
+        if len(x) > 12:
             slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
 
             print slope,intercept,r_value,p_value,std_err
@@ -260,7 +260,7 @@ def plot_by_model(title):
             else:
                 ctang.empty_plot(axes[j])
 
-        plt.suptitle('CM_SAF monthly SIS vs GEBA monthly RSDS (W/m2) in 44 stations ',fontsize=14)
+        plt.suptitle('CM SAF vs GEBA monthly SSR (W/m2) in 44 stations ',fontsize=14)
 
         outfile='validation.CM_SAF.GEBA'
         plt.savefig(outfile+'.png')

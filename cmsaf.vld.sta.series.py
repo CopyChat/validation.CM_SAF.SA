@@ -188,8 +188,8 @@ def VS(x,x1,y,ax,i,title):
         ax.yaxis.grid(color='gray', linestyle='dashed',lw=0.5)
         ax.xaxis.grid(color='gray', linestyle='dashed',lw=0.5)
 
-        ax.plot(date,x,linestyle='--',marker='s',markersize=2,zorder=2,label='GEBA',color='blue')
-        ax.plot(date,y,linestyle='-',marker='o',markersize=2,zorder=2,label='CM_SAF',color='red')
+        ax.plot(date,x,linestyle='--',marker='s',markersize=2,lw=1,zorder=2,label='GEBA',color='blue')
+        ax.plot(date,y,linestyle='-',marker='o',markersize=2,lw=1,zorder=2,label='CM_SAF',color='red')
         legend = ax.legend(loc='upper left', shadow=False ,prop={'size':5})
         ax.set_xlim(datetime.datetime(1982,12,01),datetime.datetime(2005,12,31))
         plt.setp( ax.xaxis.get_majorticklabels(), rotation=90)
@@ -273,16 +273,16 @@ def plot_by_model(title):
             else:
                 ctang.empty_plot(axes[j])
 
-        plt.suptitle('CM_SAF monthly SIS vs GEBA monthly RSDS (W/m2) in 44 stations ',fontsize=14)
+        plt.suptitle('CM SAF vs GEBA monthly SSR (W/m2) in 44 stations ',fontsize=14)
 
         outfile='validation.sta.series.CM_SAF.GEBA'
         # plt.savefig(outfile+'.png')
         plt.savefig(outfile+'.eps', format='eps')
 #=================================================== save cof
-    # headers=['Sta_'+str(i+1) for i in range(len(station_id))]
-    # with open('GEBA.validation.GEBA.1970-1999.cof.csv', 'w') as fp:
-        # fp.write(','.join(headers) + '\n')
-        # np.savetxt(fp, COF, '%5.2f', ',')
+    headers=['Sta_'+str(i+1) for i in range(len(station_id))]
+    with open('cmsaf.vld.series.8305.MAB.csv','w,') as fp:
+        fp.write(','.join(headers) + '\n')
+        np.savetxt(fp, COF, '%5.2f', ',')
 #=================================================== end plot by model
 
 plot_by_model(station_name)
