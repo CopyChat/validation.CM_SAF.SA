@@ -264,7 +264,6 @@ def plot_by_model(title):
         # fp.write(','.join(headers) + '\n')
         # np.savetxt(fp, COF, '%5.2f', ',')
 #=================================================== end plot by model
-
 plot_by_model(station_name)
 
 #=================================================== end
