@@ -40,7 +40,8 @@ mab = np.array(pd.read_csv(DIR+STATION_idfile,header=None,skiprows=1))[:,1]
 alt_mab = np.array(np.column_stack((alt,mab,N_month)))
 alt_mab=alt_mab[np.argsort(alt_mab[:,0])]
 
-alt_mab = alt_mab[alt_mab[:,2] > 20]
+alt_mab = alt_mab[alt_mab[:,2] > 10]
+alt_mab = alt_mab[alt_mab[:,1] < 50]# rm 2 cites in Madagascar
 
 alt=alt_mab[:,0]
 mab1=alt_mab[:,1]
@@ -50,8 +51,8 @@ mab1=alt_mab[:,1]
 lat_mab = np.array(np.column_stack((lats,mab,N_month)))
 lat_mab=lat_mab[np.argsort(lat_mab[:,0])]
 
-lat_mab = lat_mab[lat_mab[:,2] > 12]
-lat_mab = lat_mab[lat_mab[:,1] < 50]
+lat_mab = lat_mab[lat_mab[:,2] > 10]
+lat_mab = lat_mab[lat_mab[:,1] < 50] # rm 2 cites in Madagascar
 
 lat=lat_mab[:,0]
 mab2=lat_mab[:,1]
@@ -67,7 +68,7 @@ axx=axes
 
 axx.plot(alt,mab1,linestyle='--',marker='s',markersize=2,lw=1,zorder=2,color='blue')
 
-axx.set_xlabel("altitude")
+axx.set_xlabel("station elevation (m)")
 axx.set_ylabel("MAB (W/m2)")
 
 title1='Mean Absolute Bias and station altitude in southern Africa 1983-2005'
@@ -89,6 +90,7 @@ fig1, axes = plt.subplots(nrows=1, ncols=1, figsize=(10,8),\
 #fig.subplots_adjust(left=0.04,bottom=0.15,right=0.98,\
         # hspace=0.15,top=0.8,wspace=0.43)
 
+#=================================================== plot 2
 plt.sca(axes) # active shis subplot 
 axx=axes
 
@@ -117,6 +119,7 @@ axx.set_ylabel("MAB (W/m2)")
 
 title2='Mean Absolute Bias and station latitude in southern Africa 1983-2005'
 fig1.suptitle(title2,fontsize=12)
+#=================================================== end of plot 2
 # plot record num of each station
 # for sta in range(len(station_id)):
     # if N_month[sta] > 5 and mab[sta] > 15:

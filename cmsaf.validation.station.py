@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 ========
-Ctang, A map of mean max and min of ensembles
+rtang, A map of mean max and min of ensembles
         from CMSAF AFR-44, in Southern Africa
         Data was restored on titan
 ========

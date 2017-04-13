@@ -59,9 +59,9 @@ map.drawcountries(linewidth=1)
 
 
 for sta in range(len(station_id)):
-    if N_month[sta] > 5:
+    if N_month[sta] > 12:
         sc=plt.scatter(\
-            lons[sta], lats[sta], c=mab[sta],edgecolor='black',\
+            lons[sta], lats[sta], c=np.array(mab[sta]),edgecolor='b',\
             zorder=2,norm=norm,vmin=vmin,vmax=vmax,s=55, cmap=cmap)
 
 cb=plt.colorbar(sc,orientation='horizontal',shrink=0.6)
