@@ -26,7 +26,7 @@ import sys
 sys.path.append('/Users/ctang/Code/Python/')
 import ctang
 
-#=================================================== Definitions
+#================================================== Definitions
 
 N_model = 1
 VAR ='rsds' 
@@ -69,6 +69,8 @@ station = np.array(pd.read_csv(Dir+stationfile,index_col=False))
 #staNO,staID,lat,lon,Nmonth
 
 station_id = station[:,1]
+lats = station[:,2]
+lons = station[:,3]
 print station.shape
 
 # get station_name:
@@ -192,8 +194,8 @@ def VS(x,x1,y,ax,i,title):
         ax.plot(date,x,linestyle='--',marker='s',markersize=2,zorder=2,label='GEBA',color='blue')
         ax.plot(date,y,linestyle='-',marker='o',markersize=2,zorder=2,label='CM_SAF',color='red')
         legend = ax.legend(loc='upper left', shadow=False ,prop={'size':5})
-        ax.set_xlim(datetime.datetime(1982,12,01),datetime.datetime(2006,1,31))
-        ax.set_title(str(i+1)+". "+title[i],fontsize=6)
+        # ax.set_xlim(datetime.datetime(1982,12,01),datetime.datetime(2006,1,31))
+        ax.set_title(str(i+1)+". "+title[i]+' ('+str(format(lats[i],'.2f'))+','+str(format(lons[i],'.2f'))+')',fontsize=6)
         plt.setp( ax.xaxis.get_majorticklabels(), rotation=45)
 
     
@@ -218,9 +220,9 @@ def plot_by_model(title):
 
     for i in range(N_model):
         print("plotting in model",str(i+1))
-        fig, axes = plt.subplots(nrows=7, ncols=7,\
-            figsize=(40,18),facecolor='w', edgecolor='k') # (w,h)
-        fig.subplots_adjust(left=0.05,bottom=0.05,right=0.98,top=0.95,wspace=0.3,hspace=0.8)
+        fig, axes = plt.subplots(nrows=9, ncols=5,\
+            figsize=(30,28),facecolor='w', edgecolor='k') # (w,h)
+        fig.subplots_adjust(left=0.05,bottom=0.05,right=0.98,top=0.95,wspace=0.3,hspace=0.5)
         # fig.subplots_adjust(left=0.05,bottom=0.05,right=0.98,top=0.95,wspace=0,hspace=0)
         axes = axes.flatten() # reshape plots to 1D if needed
 
@@ -238,9 +240,6 @@ def plot_by_model(title):
 
             GEBA_PlotRsds1=np.array(GEBA_RSDS[np.where(GEBA_RSDS[:,0]==sta)])
             GEBA_PlotRsds=GEBA_PlotRsds1[:,2:15]
-
-            if j == 12:
-                pdb.set_trace()
 
             # check
             print("-------input:",j,sta,CMSAF_sta.shape,GEBA_PlotRsds.shape)
