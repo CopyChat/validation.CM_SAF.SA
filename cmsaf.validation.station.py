@@ -54,7 +54,7 @@ GEBA_rsds='rsds.mon.GEBA.csv'
 
 print Dir+GEBA_flag
 
-GEBA_FLAG = np.array(pd.read_csv(Dir+GEBA_flag,index_col=False)) # (462,18)
+GEBA_FLAG = np.array(pd.read_csv(Dir+GEBA_flag,index_col=False)) # (423,18)
 GEBA_RSDS = np.array(pd.read_csv(Dir+GEBA_rsds,index_col=False))
 #StaID,obsID,year,Jan,Feb,Mar,Api,May,Jun,July,Aug,Sep,Oct,Nov,Dec,mean,station,country,NO
 
@@ -67,6 +67,8 @@ station = np.array(pd.read_csv(Dir+stationfile,index_col=False))
 #staNO,staID,lat,lon,Nmonth
 
 station_id = station[:,1]
+lats = station[:,2]
+lons = station[:,3]
 print station.shape
 
 # get station_name:
@@ -177,7 +179,11 @@ def VS(x,x1,y,ax,i,title):
         # ax.set_title(str(i+1)+". "+title[i],fontsize=6)
         ax.text( 110,360,str(i+1)+". "+title[i],ha='left', fontsize=6, rotation=0)   
 
+        # set location, lat,lon
+        ax.text( 110,340,'('+str(format(lats[i],'.2f'))+", "+str(format(lons[i],'.2f'))+')',ha='left', fontsize=6, rotation=0)   
+
         # ref line:
+
         k=np.linspace(100,400,301)
         ax.plot(k,k,'k-',zorder=5,color='black') # identity line
 
