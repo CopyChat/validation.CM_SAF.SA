@@ -154,6 +154,8 @@ def VS(x,x1,y,ax,i,title):
 
     if len(x) == 0:             # in the case: only 1988,12 is good in GEBA
         return -90908
+    if len(x) < 0:
+        ctang.empty_plot(ax)
     else:
         vmin2=np.min(y)
         vmax2=np.max(y)
@@ -284,4 +286,3 @@ plot_by_model(station_name)
 #=================================================== end
 plt.show()
 quit()
-
