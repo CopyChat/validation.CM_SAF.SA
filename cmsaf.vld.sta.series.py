@@ -64,13 +64,14 @@ print GEBA_FLAG.shape
 #=================================================== 
 # reading station
 
-stationfile = 'GEBA.station.csv'
+stationfile = 'cmsaf.vld.sta.mab.csv'
 station = np.array(pd.read_csv(Dir+stationfile,index_col=False))
-#staNO,staID,lat,lon,Nmonth
+#NO,MAB,NO,sta_ID,lat,lon,N_month,NO,sta_ID,lat,lon,N_month,sta_ID,altitude
 
-station_id = station[:,1]
-lats = station[:,2]
-lons = station[:,3]
+station_id = station[:,3]
+lats = station[:,4]
+lons = station[:,5]
+altitude = station[:,13]
 print station.shape
 
 # get station_name:
@@ -195,7 +196,7 @@ def VS(x,x1,y,ax,i,title):
         ax.plot(date,y,linestyle='-',marker='o',markersize=2,zorder=2,label='CM_SAF',color='red')
         legend = ax.legend(loc='upper left', shadow=False ,prop={'size':5})
         # ax.set_xlim(datetime.datetime(1982,12,01),datetime.datetime(2006,1,31))
-        ax.set_title(str(i+1)+". "+title[i]+' ('+str(format(lats[i],'.2f'))+','+str(format(lons[i],'.2f'))+')',fontsize=6)
+        ax.set_title(str(i+1)+". "+title[i]+' ('+str(format(lats[i],'.2f'))+','+str(format(lons[i],'.2f'))+')'+' ('+str(format(altitude[i],'.2f'))+'m)',fontsize=6)
         plt.setp( ax.xaxis.get_majorticklabels(), rotation=45)
 
     

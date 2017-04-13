@@ -62,13 +62,15 @@ print GEBA_FLAG.shape
 #=================================================== 
 # reading station
 
-
-stationfile = 'GEBA.station.csv'
+stationfile = 'cmsaf.vld.sta.mab.csv'
 station = np.array(pd.read_csv(Dir+stationfile,index_col=False))
-#staNO,staID,lat,lon,Nmonth
+#NO,MAB,NO,sta_ID,lat,lon,N_month,NO,sta_ID,lat,lon,N_month,sta_ID,altitude
 
-station_id = station[:,1]
-print station.shape
+station_id = station[:,3]
+lats = station[:,4]
+lons = station[:,5]
+altitude = station[:,13]
+
 
 # get station_name:
 station_name=[ 't' for i in range(len(station_id))]
