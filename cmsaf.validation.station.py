@@ -62,13 +62,14 @@ print GEBA_FLAG.shape
 #=================================================== 
 # reading station
 
-stationfile = 'GEBA.station.csv'
+stationfile = 'cmsaf.vld.sta.mab.csv'
 station = np.array(pd.read_csv(Dir+stationfile,index_col=False))
-#staNO,staID,lat,lon,Nmonth
+#NO,MAB,NO,sta_ID,lat,lon,N_month,NO,sta_ID,lat,lon,N_month,sta_ID,altitude
 
-station_id = station[:,1]
-lats = station[:,2]
-lons = station[:,3]
+station_id = station[:,3]
+lats = station[:,4]
+lons = station[:,5]
+altitude = station[:,13]
 print station.shape
 
 # get station_name:
@@ -182,7 +183,7 @@ def VS(x,x1,y,ax,i,title):
         ax.text( 110,360,str(i+1)+". "+title[i],ha='left', fontsize=6, rotation=0)   
 
         # set location, lat,lon
-        ax.text( 110,340,'('+str(format(lats[i],'.2f'))+", "+str(format(lons[i],'.2f'))+')',ha='left', fontsize=6, rotation=0)   
+        ax.text( 110,340,'('+str(format(lats[i],'.2f'))+", "+str(format(lons[i],'.2f'))+')'+' ('+str(format(altitude[i],'.2f'))+' m)',ha='left', fontsize=6, rotation=0)   
 
         # ref line:
 
