@@ -183,8 +183,10 @@ def VS(x,x1,y,ax,i,title):
         ax.text( 110,360,str(i+1)+". "+title[i],ha='left', fontsize=6, rotation=0)   
 
         # set location, lat,lon
-        ax.text( 110,340,'('+str(format(lats[i],'.2f'))+", "+str(format(lons[i],'.2f'))+')'+' ('+str(format(altitude[i],'.2f'))+' m)',ha='left', fontsize=6, rotation=0)   
+        ax.text( 110,340,'('+str(format(lats[i],'.2f'))+", "+str(format(lons[i],'.2f'))+')',ha='left', fontsize=6, rotation=0)   
 
+        # set location, altitude
+        ax.text( 110,320,'('+str(int(altitude[i]))+" m)",ha='left', fontsize=6, rotation=0)   
         # ref line:
 
         k=np.linspace(100,400,301)
