@@ -255,6 +255,9 @@ def plot_by_model(title):
         # np.savetxt(fp, COF, '%5.2f', ',')
 #=================================================== end plot by model
 
+print "done"
+
+
 
 plot_by_model(station_name)
 
