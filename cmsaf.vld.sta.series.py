@@ -30,7 +30,6 @@ import ctang
 
 N_model = 1
 VAR ='rsds' 
-NYEAR=313
 
 LINE=423
 #=================================================== reading data
@@ -176,7 +175,7 @@ def VS(x,x1,y,ax,i,title):
     if len(x) > 0:
 
         vmin=100
-        vmax=385
+        vmax=390
 
         ax.set_ylabel('SSR (W/m2)',fontsize=8)
         # ax.set_xlabel('TIME',fontsize=8)
@@ -194,24 +193,31 @@ def VS(x,x1,y,ax,i,title):
 
         ax.plot(date,x,linestyle='--',marker='s',markersize=2,zorder=2,label='GEBA',color='blue')
         ax.plot(date,y,linestyle='-',marker='o',markersize=2,zorder=2,label='CM_SAF',color='red')
-        legend = ax.legend(loc='upper left', shadow=False ,prop={'size':5})
-        # ax.set_xlim(datetime.datetime(1982,12,01),datetime.datetime(2006,1,31))
-        ax.set_title(str(i+1)+". "+title[i]+' ('+str(format(lats[i],'.2f'))+','+str(format(lons[i],'.2f'))+')'+' ('+str(format(altitude[i],'.2f'))+'m)',fontsize=6)
+        if len(x) == 1:
+            legend = ax.legend(loc='upper right',shadow=False ,prop={'size':7})
+        else:
+            legend = ax.legend(loc='upper left', shadow=False ,prop={'size':7})
+
+        ax.set_title(str(i+1)+". "+title[i]+' ('+str(format(lats[i],'.2f'))+', '+str(format(lons[i],'.1f'))+')'+' ('+str(int(altitude[i]))+' m)',fontsize=6)
         plt.setp( ax.xaxis.get_majorticklabels(), rotation=45)
 
+
+    # if only one point, put text on the right of the date
     
     # no. of records
     NO=len(list(x))
-    ax.text( datetime.datetime(2005,12,01),165,'#:'+str(NO),ha='right', fontsize=8, rotation=0)   
+    ax.text(date[-1],370,'#:'+str(NO),ha='right', fontsize=9, rotation=0)   
 
     # mean bias of records
-
-    # bias=np.mean(y)-np.mean(x)
     bias=np.array([np.abs(y[l]-x[l]) for l in range(len(x))]).mean()
-    ax.text( datetime.datetime(2005,12,01),135,'mean absolute bias='+str(format(bias,'.2f')),ha='right', fontsize=8, rotation=0)   
+    ax.text(date[-1],350,'MAB:'+str(format(bias,'.2f')),ha='right', fontsize=9, rotation=0)   
 
+    # linear regression:
+    slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
+    if len(x) > 10:
+        ax.text( date[-1],330,'cof:'+str(format(r_value,'.2f')),ha='right', fontsize=9, rotation=0)   
 
-    return format(bias,'.2f')
+    return format(r_value,'.2f')
 #--------------------------------------------------- 
 
 #=================================================== plot by 21 models
