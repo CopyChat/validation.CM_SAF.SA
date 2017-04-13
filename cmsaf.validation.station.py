@@ -257,11 +257,9 @@ def plot_by_model(title):
 
 print "done"
 
-
-
 plot_by_model(station_name)
 
 #=================================================== end
-# plt.show()
+plt.show()
 quit()
 
