@@ -190,10 +190,10 @@ def VS(x,x1,y,i):
     slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
 
     # output sequence:
-    # staID, N_mon, lat, lon, alt, sta_name, MeanBias, MAB,
-    # slope, intercept, r_value, P_value, std_err
-
+    # staID, N_mon, lat, lon, alt, sta_name, # meanbias,meanbiaslt0,meanbiasgt0,mab # slope, intercept, r_value, P_value, std_err # allthebias, alltheAbsBias 
     output=[]
+
+    # staID, N_mon, lat, lon, alt, sta_name, 
     output.append(int(station_id[i]))
     output.append(N_mon)
     output.append(float(format(lats[i],".2f")))
@@ -201,20 +201,22 @@ def VS(x,x1,y,i):
     output.append(int(altitude[i]))
     output.append(station_name[i])
 
+    # meanbias,meanbiaslt0,meanbiasgt0,mab
     output.append(float(format(meanbias,'.2f')))
     output.append(float(format(meanbias1,'.2f')))
     output.append(float(format(meanbias2,'.2f')))
     output.append(float(format(mab,'.2f')))
 
+    # slope, intercept, r_value, P_value, std_err
     output.append(float(format(slope,'.2f')))
     output.append(float(format(intercept,'.2f')))
     output.append(float(format(r_value,'.2f')))
     output.append(float(format(p_value,'.2f')))
     output.append(float(format(std_err,'.2f')))
 
-    output+=bias
-    output+=ab
-
+    # allthebias, alltheAbsBias
+    # output+=bias
+    # output+=ab
 
     return output
 #--------------------------------------------------- 
@@ -257,6 +259,17 @@ def plot_array(title):
         # fp.write(','.join(headers) + '\n')
         np.savetxt(fp, COF, delimiter=" ", fmt="%s")
         # np.savetxt(fp, COF, '%5.2f', ',')
+
+    outputmat=np.array(COF[1:]) # the first is [[]]
+    print outputmat.shape
+
+    # save to txt file to save time
+    ctang.Save2mat(OUTPUT,outputmat) 
+
+    # reading from mat file
+    test=ctang.Loadmat(OUTPUT+'.mat')
+
+    print test.shape
 #=================================================== end plot by model
 plot_array(station_name)
 #=================================================== end
