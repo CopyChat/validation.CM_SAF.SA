@@ -194,11 +194,11 @@ def VS(x,x1,y,ax,i,title):
         ax.plot(date,x,linestyle='--',marker='s',markersize=2,zorder=2,label='GEBA',color='blue')
         ax.plot(date,y,linestyle='-',marker='o',markersize=2,zorder=2,label='CM_SAF',color='red')
         if len(x) == 1:
-            legend = ax.legend(loc='upper right',shadow=False ,prop={'size':7})
+            legend = ax.legend(loc='upper right',shadow=False ,prop={'size':12})
         else:
-            legend = ax.legend(loc='upper left', shadow=False ,prop={'size':7})
+            legend = ax.legend(loc='upper left', shadow=False ,prop={'size':12})
 
-        ax.set_title(str(i+1)+". "+title[i]+' ('+str(format(lats[i],'.2f'))+', '+str(format(lons[i],'.1f'))+')'+' ('+str(int(altitude[i]))+' m)',fontsize=6)
+        ax.set_title(str(i+1)+". "+title[i]+' ('+str(format(lats[i],'.2f'))+', '+str(format(lons[i],'.1f'))+')'+' ('+str(int(altitude[i]))+' m)',fontsize=12)
         plt.setp( ax.xaxis.get_majorticklabels(), rotation=45)
 
 
