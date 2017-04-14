@@ -60,8 +60,11 @@ map.drawcountries(linewidth=1)
 
 for sta in range(len(station_id)):
     if N_month[sta] > 12:
+        cc=int(mab[sta])
+        print cc,lons[sta],lats[sta]
         sc=plt.scatter(\
-            lons[sta], lats[sta], c=np.array(mab[sta]),edgecolor='b',\
+            # lons[sta], lats[sta], c=cc,\
+            -22,22,c=cc,\
             zorder=2,norm=norm,vmin=vmin,vmax=vmax,s=55, cmap=cmap)
 
 cb=plt.colorbar(sc,orientation='horizontal',shrink=0.6)
@@ -81,11 +84,8 @@ fig.suptitle(title,fontsize=12)
             # # bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.5),\
             # # arrowprops=dict(arrowstyle = '->', connectionstyle='arc3,rad=0')\
             # )
-
 plt.savefig('mon.flg.sta.SA.8305.eps',format='eps')
 #===================================================  end of subplot 3
 print "done"
 plt.show()
-
 quit()
-
