@@ -30,8 +30,9 @@ import ctang
 
 N_model = 1
 VAR ='rsds' 
-
 LINE=423
+
+OUTPUT='CMSAF.GEBA.station.data'
 #=================================================== reading data
 # reading CMSAF
 
@@ -116,7 +117,7 @@ def justice(flag):
 
 #--------------------------------------------------- 
 # functino to plot GEBA vs OBS
-def VS(x,x1,y,ax,i,title):
+def VS(x,x1,y,i):
 
     # rename the x, x1, y and convert to np.array
     rsds=np.zeros((x.shape[0],x.shape[1]))
@@ -148,7 +149,7 @@ def VS(x,x1,y,ax,i,title):
         date=[]
 
         for k in range(1,13,1):
-            if cmsaf[j,k] > 0:                    # rm missing data 1988-12
+            if cmsaf[j,k] > 0:              # rm missing data 1988-12
                 if justice(flag[j,k]) == 1:
                     rsds_plot.append(rsds[j,k])
                     cmsaf_plot.append(cmsaf[j,k])
@@ -161,116 +162,102 @@ def VS(x,x1,y,ax,i,title):
         x_plot+=rsds_plot
         y_plot+=cmsaf_plot
         date_plot+=date
-        # print i,title[i],len(date),len(rsds_plot),len(cmsaf_plot),"============ in VS"
 
-    x=x_plot
-    y=y_plot
-    date=date_plot
-    print i,title[i],len(date),len(x),len(y),"============ in VS"
+    geba=x_plot
+    cmsaf=y_plot
 
+    x=geba
+    y=cmsaf
+    print "==========="
+    print x,y
 
-
-    #=================================================== plot
-    if len(x) > 0:
-
-        vmin=100
-        vmax=390
-
-        ax.set_ylabel('SSR (W/m2)',fontsize=8)
-        # ax.set_xlabel('TIME',fontsize=8)
-
-        ax.set_ylim((vmin,vmax))
-        ax.set_yticks(range(vmin,vmax,50))
-
-        ax.xaxis.set_major_locator(MonthLocator(1)) # interval = 5
-        ax.xaxis.set_major_formatter(DateFormatter('%Y-%m'))
-        ax.fmt_xdata = DateFormatter('%Y-%m')
-
-
-        ax.yaxis.grid(color='gray', linestyle='dashed',lw=0.5)
-        ax.xaxis.grid(color='gray', linestyle='dashed',lw=0.5)
-
-        ax.plot(date,x,linestyle='--',marker='s',markersize=2,zorder=2,label='GEBA',color='blue')
-        ax.plot(date,y,linestyle='-',marker='o',markersize=2,zorder=2,label='CM_SAF',color='red')
-        if len(x) == 1:
-            legend = ax.legend(loc='upper right',shadow=False ,prop={'size':12})
-        else:
-            legend = ax.legend(loc='upper left', shadow=False ,prop={'size':12})
-
-        ax.set_title(str(i+1)+". "+title[i]+' ('+str(format(lats[i],'.2f'))+', '+str(format(lons[i],'.1f'))+')'+' ('+str(int(altitude[i]))+' m)',fontsize=12)
-        plt.setp( ax.xaxis.get_majorticklabels(), rotation=45)
-
-
-    # if only one point, put text on the right of the date
-    
     # no. of records
-    NO=len(list(x))
-    ax.text(date[-1],370,'#:'+str(NO),ha='right', fontsize=9, rotation=0)   
+    N_mon=len(list(x))
 
     # mean bias of records
-    bias=np.array([np.abs(y[l]-x[l]) for l in range(len(x))]).mean()
-    ax.text(date[-1],350,'MAB:'+str(format(bias,'.2f')),ha='right', fontsize=9, rotation=0)   
+    bias=np.array([y[l]-x[l] for l in range(len(x))])
+    meanbias=bias.mean()
+
+    meanbias1=bias[bias<0].mean()
+    meanbias2=bias[bias>0].mean()
+
+
+    # mean absolute bias of records
+    ab=np.array([np.abs(y[l]-x[l]) for l in range(len(x))])
+    mab=ab.mean()
 
     # linear regression:
     slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
-    if len(x) > 10:
-        ax.text( date[-1],330,'cof:'+str(format(r_value,'.2f')),ha='right', fontsize=9, rotation=0)   
 
-    return format(bias,'.2f')
+    # output sequence:
+    # staID, N_mon, lat, lon, alt, sta_name, MeanBias, MAB,
+    # slope, intercept, r_value, P_value, std_err
+
+    output=[]
+    output.append(int(station_id[i]))
+    output.append(N_mon)
+    output.append(float(format(lats[i],".2f")))
+    output.append(float(format(lons[i],".2f")))
+    output.append(int(altitude[i]))
+    output.append(station_name[i])
+
+    output.append(float(format(meanbias,'.2f')))
+    output.append(float(format(meanbias1,'.2f')))
+    output.append(float(format(meanbias2,'.2f')))
+    output.append(float(format(mab,'.2f')))
+
+    output.append(float(format(slope,'.2f')))
+    output.append(float(format(intercept,'.2f')))
+    output.append(float(format(r_value,'.2f')))
+    output.append(float(format(p_value,'.2f')))
+    output.append(float(format(std_err,'.2f')))
+
+    output+=bias
+    output+=ab
+
+
+    return output
 #--------------------------------------------------- 
 
 #=================================================== plot by 21 models
 
-def plot_by_model(title):
-    COF=np.zeros((N_model,len(station_id)))
+def plot_array(title):
+    COF=np.zeros((len(station_id),276))
+    COF=[[]]
 
-    for i in range(N_model):
-        print("plotting in model",str(i+1))
-        fig, axes = plt.subplots(nrows=9, ncols=5,\
-            figsize=(30,28),facecolor='w', edgecolor='k') # (w,h)
-        fig.subplots_adjust(left=0.05,bottom=0.05,right=0.98,top=0.95,wspace=0.3,hspace=0.5)
-        # fig.subplots_adjust(left=0.05,bottom=0.05,right=0.98,top=0.95,wspace=0,hspace=0)
-        axes = axes.flatten() # reshape plots to 1D if needed
+    for j in range(len(station_id)):
+        sta=station_id[j]
 
-        for j in range(len(station_id)):
-            sta=station_id[j]
+        # prepare cm_saf
+        CMSAF_array=CMSAF
+        CMSAF_sta1=np.array(CMSAF_array[np.where(CMSAF_array[:,1]==sta)])
+        CMSAF_sta=CMSAF_sta1[:,2:15]
 
-            # prepare cm_saf
-            CMSAF_array=CMSAF
-            CMSAF_sta1=np.array(CMSAF_array[np.where(CMSAF_array[:,1]==sta)])
-            CMSAF_sta=CMSAF_sta1[:,2:15]
+        # prepare obs
+        GEBA_PlotFlag1=np.array(GEBA_FLAG[np.where(GEBA_FLAG[:,0]==sta)])
+        GEBA_PlotFlag=GEBA_PlotFlag1[:,2:15]
 
-            # prepare obs
-            GEBA_PlotFlag1=np.array(GEBA_FLAG[np.where(GEBA_FLAG[:,0]==sta)])
-            GEBA_PlotFlag=GEBA_PlotFlag1[:,2:15]
+        GEBA_PlotRsds1=np.array(GEBA_RSDS[np.where(GEBA_RSDS[:,0]==sta)])
+        GEBA_PlotRsds=GEBA_PlotRsds1[:,2:15]
 
-            GEBA_PlotRsds1=np.array(GEBA_RSDS[np.where(GEBA_RSDS[:,0]==sta)])
-            GEBA_PlotRsds=GEBA_PlotRsds1[:,2:15]
-
-            # check
-            print("-------input:",j,sta,CMSAF_sta.shape,GEBA_PlotRsds.shape)
+        # check
+        print("-------input:",j,sta,CMSAF_sta.shape,GEBA_PlotRsds.shape)
 
 #=================================================== 
-            # to plot
-            COF[i,j]=VS(\
-                    np.array(np.float32(GEBA_PlotRsds)),\
-                    np.array(np.float32(GEBA_PlotFlag)),\
-                    np.array(np.float32(CMSAF_sta)),\
-                    axes[j],j,title)
+        # to send plot data
+        COF.append(VS(\
+            np.array(np.float32(GEBA_PlotRsds)),\
+            np.array(np.float32(GEBA_PlotFlag)),\
+            np.array(np.float32(CMSAF_sta)),\
+            j))
 
-        plt.suptitle('CM_SAF monthly SIS vs GEBA monthly RSDS (W/m2) in 44 stations ',fontsize=14)
-
-        outfile='validation.sta.series.CM_SAF.GEBA'
-        # plt.savefig(outfile+'.png')
-        plt.savefig(outfile+'.eps', format='eps')
 #=================================================== save cof
-    # headers=['Sta_'+str(i+1) for i in range(len(station_id))]
-    # with open('GEBA.validation.GEBA.1970-1999.cof.csv', 'w') as fp:
+    headers=['Sta_'+str(i+1) for i in range(len(station_id))]
+    with open(OUTPUT+'.csv', 'w') as fp:
         # fp.write(','.join(headers) + '\n')
+        np.savetxt(fp, COF, delimiter=" ", fmt="%s")
         # np.savetxt(fp, COF, '%5.2f', ',')
 #=================================================== end plot by model
-plot_by_model(station_name)
-
+plot_array(station_name)
 #=================================================== end
-plt.show()
 quit()
