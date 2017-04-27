@@ -190,8 +190,10 @@ def VS(x,x1,y,ax,i,title):
         ax.yaxis.grid(color='gray', linestyle='dashed',lw=0.5)
         ax.xaxis.grid(color='gray', linestyle='dashed',lw=0.5)
 
-        ax.plot(date,x,linestyle='--',marker='s',markersize=2,zorder=2,label='GEBA',color='blue')
-        ax.plot(date,y,linestyle='-',marker='o',markersize=2,zorder=2,label='CM_SAF',color='red')
+        # ax.plot(date,x,linestyle='--',marker='s',markersize=2,zorder=2,label='GEBA',color='blue')
+        # ax.plot(date,y,linestyle='-',marker='o',markersize=2,zorder=2,label='CM_SAF',color='red')
+        ax.scatter(date,x,marker='s',zorder=2,label='GEBA',color='blue')
+        ax.scatter(date,y,marker='o',zorder=2,label='CM_SAF',color='red')
         if len(x) == 1:
             legend = ax.legend(loc='upper right',shadow=False ,prop={'size':12})
         else:

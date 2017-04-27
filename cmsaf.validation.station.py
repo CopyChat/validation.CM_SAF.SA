@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 """
 ========
-Ctang, A map of mean max and min of ensembles
+rtang, A map of mean max and min of ensembles
         from CMSAF AFR-44, in Southern Africa
         Data was restored on titan
 ========
 """
-import pdb
 import math
+import pdb
 import subprocess
 import numpy as np
 import pandas as pd
@@ -54,7 +54,7 @@ GEBA_rsds='rsds.mon.GEBA.csv'
 
 print Dir+GEBA_flag
 
-GEBA_FLAG = np.array(pd.read_csv(Dir+GEBA_flag,index_col=False)) # (462,18)
+GEBA_FLAG = np.array(pd.read_csv(Dir+GEBA_flag,index_col=False)) # (423,18)
 GEBA_RSDS = np.array(pd.read_csv(Dir+GEBA_rsds,index_col=False))
 #StaID,obsID,year,Jan,Feb,Mar,Api,May,Jun,July,Aug,Sep,Oct,Nov,Dec,mean,station,country,NO
 
@@ -70,7 +70,7 @@ station_id = station[:,3]
 lats = station[:,4]
 lons = station[:,5]
 altitude = station[:,13]
-
+print station.shape
 
 # get station_name:
 station_name=[ 't' for i in range(len(station_id))]
@@ -84,8 +84,6 @@ print station_name
 # good data: 1
 # bad data: -1
 # missing data: 0
-
-aaa=000
 
 def justice(flag):
     jjj=90908                     # default
@@ -118,7 +116,6 @@ def justice(flag):
 #--------------------------------------------------- 
 # functino to plot GEBA vs OBS
 def VS(x,x1,y,ax,i,title):
-
     vmin=100
     vmax=385
 
@@ -129,12 +126,11 @@ def VS(x,x1,y,ax,i,title):
     ax.set_xticks(range(vmin,vmax,50))
     ax.set_yticks(range(vmin,vmax,50))
 
-    ax.set_xlabel('GEBA',fontsize=7)
-    ax.set_ylabel('CM_SAF',fontsize=7)
+    # ax.set_xlabel('GEBA',fontsize=7)
+    # ax.set_ylabel('CM_SAF',fontsize=7)
 
     ax.tick_params(direction='in',length=2,width=1,labelsize=6)
 
-    ax.set_title(str(i+1)+". "+title[i],fontsize=6)
     
     ax.set_axisbelow(True)
     ax.set_aspect('equal')
@@ -159,6 +155,8 @@ def VS(x,x1,y,ax,i,title):
 
     if len(x) == 0:             # in the case: only 1988,12 is good in GEBA
         return -90908
+    if len(x) < 0:
+        ctang.empty_plot(ax)
     else:
         vmin2=np.min(y)
         vmax2=np.max(y)
@@ -180,25 +178,35 @@ def VS(x,x1,y,ax,i,title):
         NO=len(list(x))
         ax.text( 380,165,'#:'+str(NO),ha='right', fontsize=8, rotation=0)   
 
+        # set title
+        # ax.set_title(str(i+1)+". "+title[i],fontsize=6)
+        ax.text( 110,360,str(i+1)+". "+title[i],ha='left', fontsize=6, rotation=0)   
+
+        # set location, lat,lon
+        ax.text( 110,340,'('+str(format(lats[i],'.2f'))+", "+str(format(lons[i],'.2f'))+')',ha='left', fontsize=6, rotation=0)   
+
+        # set location, altitude
+        ax.text( 110,320,'('+str(int(altitude[i]))+" m)",ha='left', fontsize=6, rotation=0)   
         # ref line:
+
         k=np.linspace(100,400,301)
         ax.plot(k,k,'k-',zorder=5,color='black') # identity line
 
         # linear regression:
-        if len(x) > 5:
+        if len(x) > 12:
             slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
 
             print slope,intercept,r_value,p_value,std_err
 
-
             yy=[t*slope+intercept for t in range(400)]
             ax.plot(range(400),yy,'--',color='red',zorder=10,label='fitting')
-            legend = ax.legend(loc='upper left', shadow=False,prop={'size':8})
+            # legend = ax.legend(loc='upper left', shadow=False,prop={'size':8})
 
             if p_value < 0.01:
                 ax.text( 370,135,'r='+str(format(r_value,'.2f'))+'(p<0.01)',ha='right', fontsize=8, rotation=0)   
             else:
                 ax.text( 370,135,'r='+str(format(r_value,'.2f'))+'(p='+str(format(p_value,'.2f'))+')',ha='right', fontsize=8, rotation=0)   
+
 
         # cof=float(np.ma.corrcoef(x,y)[0,1])
         # ax.text( 380,135,'cof:'+str(format(cof,'.2f')),ha='right', fontsize=8, rotation=0)   # plot vs line
@@ -207,43 +215,63 @@ def VS(x,x1,y,ax,i,title):
 
 #=================================================== plot by 21 models
 
+ncol=5
+nrow=9
+
 def plot_by_model(title):
     COF=np.zeros((N_model,len(station_id)))
 
     for i in range(N_model):
         print("plotting in model",str(i+1))
-        fig, axes = plt.subplots(nrows=7, ncols=7,\
-            figsize=(14,14),facecolor='w', edgecolor='k') # (w,h)
-        fig.subplots_adjust(left=0.03,bottom=0.03,right=0.99,top=0.94,wspace=0.3,hspace=0.34)
+
+        fig, axes = plt.subplots(nrows=nrow, ncols=ncol,\
+            sharex=True, sharey=True,\
+            figsize=(ncol*2,nrow*2),facecolor='w', edgecolor='k') # (w,h)
+        fig.text(0.5, 0.04, 'GEBA', ha='center')
+        fig.text(0.03, 0.7, 'CM_SAF', va='center', rotation='vertical')
+        fig.subplots_adjust(left=0.07,bottom=0.07,right=0.93,top=0.93,wspace=0,hspace=0)
         axes = axes.flatten() # reshape plots to 1D if needed
 
-        for j in range(len(station_id)):
-            sta=station_id[j]
+        # fig = plt.figure(figsize=(ncol+1, nrow+1)) # (w,h)
+        # gs = gridspec.GridSpec(nrow, ncol,\
+            # sharex=True, sharey=True,\
+            # wspace=0.0, hspace=0.0,\
+            # top=1.-0.5/(nrow+1), bottom=0.5/(nrow+1),\
+            # left=0.5/(ncol+1), right=1-0.5/(ncol+1)) 
 
-            # prepare cm_saf
-            CMSAF_array=CMSAF
-            CMSAF_sta1=np.array(CMSAF_array[np.where(CMSAF_array[:,1]==sta)])
-            CMSAF_sta=CMSAF_sta1[:,3:15].flatten()
+        for j in range(ncol*nrow):
+            if j < (len(station_id)):
+
+                # ax = plt.subplot(gs[j])
+                sta=station_id[j]
+
+                # prepare cm_saf
+                CMSAF_array=CMSAF
+                CMSAF_sta1=np.array(CMSAF_array[np.where(CMSAF_array[:,1]==sta)])
+                CMSAF_sta=CMSAF_sta1[:,3:15].flatten()
             
-            # prepare obs
-            GEBA_PlotFlag1=np.array(GEBA_FLAG[np.where(GEBA_FLAG[:,0]==sta)])
-            GEBA_PlotFlag=GEBA_PlotFlag1[:,3:15].flatten()
+                # prepare obs
+                GEBA_PlotFlag1=np.array(GEBA_FLAG[np.where(GEBA_FLAG[:,0]==sta)])
+                GEBA_PlotFlag=GEBA_PlotFlag1[:,3:15].flatten()
 
-            GEBA_PlotRsds1=np.array(GEBA_RSDS[np.where(GEBA_RSDS[:,0]==sta)])
-            GEBA_PlotRsds=GEBA_PlotRsds1[:,3:15].flatten()
+                GEBA_PlotRsds1=np.array(GEBA_RSDS[np.where(GEBA_RSDS[:,0]==sta)])
+                GEBA_PlotRsds=GEBA_PlotRsds1[:,3:15].flatten()
 
-            # check
-            print("-------input:",j,sta,CMSAF_sta.shape,GEBA_PlotRsds.shape)
+                # check
+                print("-------input:",j,sta,CMSAF_sta.shape,GEBA_PlotRsds.shape)
 
 #=================================================== 
-            # to plot
-            COF[i,j]=VS(\
+                # to plot
+                COF[i,j]=VS(\
                     np.array(np.float32(GEBA_PlotRsds)),\
                     np.array(np.float32(GEBA_PlotFlag)),\
                     np.array(np.float32(CMSAF_sta)),\
                     axes[j],j,title)
+                    # ax,j,title)
+            else:
+                ctang.empty_plot(axes[j])
 
-        plt.suptitle('CM_SAF monthly SIS vs GEBA monthly RSDS (W/m2) in 44 stations ',fontsize=14)
+        plt.suptitle('CM SAF vs GEBA monthly SSR (W/m2) in 44 stations ',fontsize=14)
 
         outfile='validation.CM_SAF.GEBA'
         plt.savefig(outfile+'.png')
@@ -255,11 +283,9 @@ def plot_by_model(title):
         # np.savetxt(fp, COF, '%5.2f', ',')
 #=================================================== end plot by model
 
-print "done"
 
 plot_by_model(station_name)
 
 #=================================================== end
 plt.show()
 quit()
-
